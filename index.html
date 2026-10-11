@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10243e">
+  <title>Bank Customer Service Queue Optimizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Bank service desk home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span class="brand-name">NORTHSTAR <span>BANK</span></span>
+    </a>
+    <div class="header-meta">
+      <span class="live-indicator"><span></span> Service desk active</span>
+      <span class="header-date" id="current-date"></span>
+    </div>
+  </header>
+
+  <main id="top" class="dashboard">
+    <section class="page-heading" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">BRANCH OPERATIONS <span>/</span> CUSTOMER SERVICE</p>
+        <h1 id="page-title">Bank Token Queue<br class="mobile-break"> Management System</h1>
+        <p class="subtitle">Serving every customer in order — First-In, First-Out (FIFO)</p>
+      </div>
+      <div class="heading-stamp" aria-label="Queue policy: first in, first out">
+        <span class="stamp-icon" aria-hidden="true">↗</span>
+        <span><strong>FIFO</strong><small>Fair service, every time</small></span>
+      </div>
+    </section>
+
+    <section class="panels" aria-label="Queue management dashboard">
+      <article class="panel token-panel" aria-labelledby="tokens-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">LIVE QUEUE</p>
+            <h2 id="tokens-heading">Token details</h2>
+          </div>
+          <span class="panel-count" id="queue-count">0 waiting</span>
+        </div>
+
+        <div class="flow-section">
+          <div class="subheading-row">
+            <h3>Queue flow</h3>
+            <span class="flow-key"><i></i> Waiting</span>
+          </div>
+          <div class="queue-flow" id="queue-flow" aria-live="polite" aria-label="Queue flow from front to rear"></div>
+        </div>
+
+        <div class="table-section">
+          <div class="subheading-row">
+            <h3>Token register</h3>
+            <span class="table-note">Most recent first</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th scope="col">Token no.</th><th scope="col">Customer</th><th scope="col">Status</th></tr>
+              </thead>
+              <tbody id="token-table-body"></tbody>
+            </table>
+            <p class="table-empty" id="table-empty" hidden>No tokens have been generated yet.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel summary-panel" aria-labelledby="summary-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">AT A GLANCE</p>
+            <h2 id="summary-heading">Queue summary</h2>
+          </div>
+          <span class="summary-icon" aria-hidden="true">▦</span>
+        </div>
+
+        <div class="metrics-grid">
+          <section class="metric metric-blue">
+            <span class="metric-icon" aria-hidden="true">＋</span>
+            <p>Tokens generated</p>
+            <strong id="tokens-generated">0</strong>
+            <small>Today</small>
+          </section>
+          <section class="metric metric-green">
+            <span class="metric-icon" aria-hidden="true">✓</span>
+            <p>Customers served</p>
+            <strong id="customers-served">0</strong>
+            <small>Completed</small>
+          </section>
+          <section class="metric metric-amber">
+            <span class="metric-icon" aria-hidden="true">◷</span>
+            <p>Waiting in queue</p>
+            <strong id="waiting-count">0</strong>
+            <small>Awaiting service</small>
+          </section>
+          <section class="metric metric-slate">
+            <span class="metric-icon" aria-hidden="true">↳</span>
+            <p>Last served</p>
+            <strong class="last-served-value" id="last-served">—</strong>
+            <small id="last-served-caption">No customers served</small>
+          </section>
+        </div>
+
+        <div class="queue-status-row">
+          <div>
+            <span class="status-dot" id="queue-status-dot"></span>
+            <div><strong>Queue status</strong><small id="queue-status-caption">Ready for customers</small></div>
+          </div>
+          <span class="status-badge status-open" id="queue-status">Open</span>
+        </div>
+
+        <div class="service-note">
+          <span aria-hidden="true">i</span>
+          <p>Customers are served in the order their tokens are generated.</p>
+        </div>
+      </article>
+
+      <article class="panel operations-panel" aria-labelledby="operations-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">DESK CONTROLS</p>
+            <h2 id="operations-heading">Menu operations</h2>
+          </div>
+          <span class="operations-icon" aria-hidden="true">☰</span>
+        </div>
+
+        <form id="generate-form" class="generate-form" novalidate>
+          <label for="customer-name">Generate a new token</label>
+          <div class="input-wrap">
+            <span aria-hidden="true">♙</span>
+            <input id="customer-name" name="customerName" type="text" placeholder="Enter customer name" maxlength="60" autocomplete="off">
+          </div>
+          <button class="button button-primary" type="submit"><span aria-hidden="true">＋</span> Generate token</button>
+        </form>
+
+        <div class="operation-list" aria-label="Queue actions">
+          <p class="operation-label">Queue actions</p>
+          <button class="button button-secondary" id="serve-button" type="button"><span class="button-symbol serve-symbol" aria-hidden="true">→</span><span>Serve next customer<small>Remove the front token</small></span></button>
+          <button class="button button-secondary" id="display-button" type="button"><span class="button-symbol display-symbol" aria-hidden="true">≡</span><span>Display waiting list<small>View current queue order</small></span></button>
+          <button class="button button-reset" id="reset-button" type="button"><span class="button-symbol reset-symbol" aria-hidden="true">↻</span><span>Reset queue<small>Clear tokens and counters</small></span></button>
+        </div>
+
+        <div class="message-box" id="message-box" role="status" aria-live="polite">
+          <span class="message-icon" id="message-icon" aria-hidden="true">i</span>
+          <p id="message-text">Three demo customers are waiting.</p>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer-banner">
+      <span class="footer-icon" aria-hidden="true">✳</span>
+      <strong>First come, first served!</strong>
+      <span class="footer-rule" aria-hidden="true"></span>
+      <span class="footer-caption">FAIR SERVICE STARTS HERE</span>
+    </footer>
+  </main>
+</body>
+</html>
